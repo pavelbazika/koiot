@@ -201,7 +201,7 @@ func (sch *tScheduleTime) GetNextTime(t time.Time) (time.Time, bool) {
 	var min int
 	var sec int
 
-	prevTime := false
+	futureTime := false
 
 	// year
 	if sch.year != nil {
@@ -209,12 +209,12 @@ func (sch *tScheduleTime) GetNextTime(t time.Time) (time.Time, bool) {
 	} else {
 		yr = rqYr
 	}
-	if yr > rqYr {
-		// first ocurrence is in the future
+	if yr < rqYr {
+		// last ocurrence is in the past
 		return time.Time{}, false
-	} else if yr < rqYr {
-		// choosen year is in the past
-		prevTime = true
+	} else if yr > rqYr {
+		// choosen year is in the future
+		futureTime = true
 	}
 
 	// month
@@ -222,43 +222,43 @@ func (sch *tScheduleTime) GetNextTime(t time.Time) (time.Time, bool) {
 	case sch.month != nil:
 		mon = *sch.month
 
-	case prevTime:
-		mon = 12
+	case futureTime:
+		mon = 1
 
 	default:
 		mon = rqMon
 	}
-	if !prevTime && (mon > rqMon) {
-		// month specified by schedule, after rq
+	if !futureTime && (mon < rqMon) {
+		// month specified by schedule, before rq
 		if sch.year == nil {
 			// year can be manipulated
-			yr--
+			yr++
 		} else {
-			// year cannot be moved, event in future
+			// year cannot be moved, event in past
 			return time.Time{}, false
 		}
 	}
-	prevTime = (yr < rqYr) || (mon < rqMon)
+	futureTime = (yr > rqYr) || (mon > rqMon)
 
 	// day
 	switch {
 	case sch.day != nil:
 		day = *sch.day
 
-	case prevTime:
-		day = daysIn(yr, mon)
+	case futureTime:
+		day = 1
 
 	default:
 		day = rqDay
 	}
 	if sch.weekday != nil {
-		if !sch.subYMD(&yr, &mon, &day, true) {
+		if !sch.addYMD(&yr, &mon, &day, true) {
 			return time.Time{}, false
 		}
-		prevTime = (yr < rqYr) || (mon < rqMon) || (day < rqDay)
+		futureTime = (yr > rqYr) || (mon > rqMon) || (day > rqDay)
 	}
-	if !prevTime && (day > rqDay) {
-		if !sch.subYM(&yr, &mon) {
+	if !futureTime && (day < rqDay) {
+		if !sch.addYM(&yr, &mon) {
 			return time.Time{}, false
 		}
 
@@ -267,54 +267,54 @@ func (sch *tScheduleTime) GetNextTime(t time.Time) (time.Time, bool) {
 			day = maxDay
 		}
 	}
-	prevTime = (yr < rqYr) || (mon < rqMon) || (day < rqDay)
+	futureTime = (yr > rqYr) || (mon > rqMon) || (day > rqDay)
 
 	switch {
 	case sch.hour != nil:
 		hr = *sch.hour
 
-	case prevTime:
-		hr = 23
+	case futureTime:
+		hr = 0
 
 	default:
 		hr = rqHr
 	}
-	if !prevTime && (hr > rqHr) {
-		if !sch.subYMD(&yr, &mon, &day, false) {
+	if !futureTime && (hr < rqHr) {
+		if !sch.addYMD(&yr, &mon, &day, false) {
 			return time.Time{}, false
 		}
 	}
-	prevTime = (yr < rqYr) || (mon < rqMon) || (day < rqDay) || (hr < rqHr)
+	futureTime = (yr > rqYr) || (mon > rqMon) || (day > rqDay) || (hr > rqHr)
 
 	switch {
 	case sch.minute != nil:
 		min = *sch.minute
 
-	case prevTime:
-		min = 59
+	case futureTime:
+		min = 0
 
 	default:
 		min = rqMin
 	}
-	if !prevTime && (min > rqMin) {
-		if !sch.subYMDH(&yr, &mon, &day, &hr) {
+	if !futureTime && (min < rqMin) {
+		if !sch.addYMDH(&yr, &mon, &day, &hr) {
 			return time.Time{}, false
 		}
 	}
-	prevTime = (yr < rqYr) || (mon < rqMon) || (day < rqDay) || (hr < rqHr) || (min < rqMin)
+	futureTime = (yr > rqYr) || (mon > rqMon) || (day > rqDay) || (hr > rqHr) || (min > rqMin)
 
 	switch {
 	case sch.second != nil:
 		sec = *sch.second
 
-	case prevTime:
-		sec = 59
+	case futureTime:
+		sec = 0
 
 	default:
 		sec = rqSec
 	}
-	if !prevTime && (sec > rqSec) {
-		if !sch.subYMDHM(&yr, &mon, &day, &hr, &min) {
+	if !futureTime && (sec < rqSec) {
+		if !sch.addYMDHM(&yr, &mon, &day, &hr, &min) {
 			return time.Time{}, false
 		}
 	}
@@ -450,5 +450,132 @@ func (sch *tScheduleTime) subYMDHM(year *int, month *time.Month, day *int, hour 
 		return true
 	} else {
 		return sch.subYMDH(year, month, day, hour)
+	}
+}
+
+// add month to next ocurrence
+func (sch *tScheduleTime) addYM(year *int, month *time.Month) bool {
+	if sch.month == nil {
+		// month can be manipulated
+		if *month == time.December {
+			if sch.year == nil {
+				*year++
+				*month = time.January
+			} else {
+				// year cannot be augmented
+				return false
+			}
+		} else {
+			*month++
+		}
+	} else {
+		// month cannot be manipulated
+		if sch.year == nil {
+			*year++
+		} else {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (sch *tScheduleTime) addYMD(year *int, month *time.Month, day *int, weekDayFind bool) bool {
+	if sch.day == nil {
+		if sch.weekday == nil {
+			// day can be freely manipulated
+			if *day == daysIn(*year, *month) {
+				if !sch.addYM(year, month) {
+					return false
+				}
+				*day = 1
+			} else {
+				*day++
+			}
+		} else {
+			// weekday is set
+			dayWd := time.Date(*year, *month, *day, 0, 0, 0, 0, time.UTC).Weekday()
+			diff := 0
+			if dayWd == *sch.weekday {
+				// we are on requested weekday
+				if !weekDayFind {
+					diff = 7
+				}
+			} else {
+				diff = int(*sch.weekday) - int(dayWd)
+				if diff < 0 {
+					diff += 7
+				}
+			}
+
+			*day += diff
+			if *day > daysIn(*year, *month) {
+				if !sch.addYM(year, month) {
+					return false
+				}
+				*day = 1
+				dayWd = time.Date(*year, *month, *day, 0, 0, 0, 0, time.UTC).Weekday()
+				if dayWd != *sch.weekday {
+					diff = int(*sch.weekday) - int(dayWd)
+					if diff < 0 {
+						diff += 7
+					}
+				} else {
+					diff = 0
+				}
+
+				*day += diff
+			}
+		}
+	} else {
+		// day cannot be manipulated
+		if !sch.addYM(year, month) {
+			return false
+		}
+
+		// but when the day is after end of month, we manipulate
+		maxDay := daysIn(*year, *month)
+		if maxDay < *day {
+			*day = maxDay
+		}
+	}
+
+	return true
+}
+
+func (sch *tScheduleTime) addYMDH(year *int, month *time.Month, day *int, hour *int) bool {
+	if sch.hour == nil {
+		// hour can be manipulated
+		if *hour == 23 {
+			if !sch.addYMD(year, month, day, false) {
+				return false
+			}
+			*hour = 0
+		} else {
+			*hour++
+		}
+
+		return true
+	} else {
+		// static hour
+		return sch.addYMD(year, month, day, false)
+	}
+}
+
+func (sch *tScheduleTime) addYMDHM(year *int, month *time.Month, day *int, hour *int, min *int) bool {
+	if sch.minute == nil {
+		// minute can be manipulated
+		if *min == 59 {
+			if !sch.addYMDH(year, month, day, hour) {
+				return false
+			}
+			*min = 0
+		} else {
+			*min++
+		}
+
+		return true
+	} else {
+		return sch.addYMDH(year, month, day, hour)
 	}
 }

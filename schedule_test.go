@@ -13,7 +13,7 @@ func TestPrevYear(t *testing.T) {
 	year := 2023
 	sch.year = &year
 
-	rsp, ok := sch.GetPrevTime(testTime)
+	rsp, ok := sch.GetNextTime(testTime)
 	require.True(t, ok)
 	require.Equal(t, testTime, rsp)
 
@@ -468,4 +468,466 @@ func TestPrevSecond(t *testing.T) {
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
 	require.Equal(t, time.Date(2023, 3, 4, 14, 59, 10, 0, time.UTC), rsp)
+}
+
+func TestNextYear(t *testing.T) {
+	var sch tScheduleTime
+	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
+	year := 2023
+	sch.year = &year
+
+	rsp, ok := sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 3, 4, 18, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2022, 3, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2024, 3, 4, 15, 30, 10, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+}
+
+func TestNextMonth(t *testing.T) {
+	var sch tScheduleTime
+	year := 2023
+	mon := time.March
+	sch.year = &year
+	sch.month = &mon
+
+	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok := sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 2, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 1, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2022, 3, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 1, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 4, 4, 15, 30, 10, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	sch.year = nil
+	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 4, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2024, 3, 1, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 2, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 1, 0, 0, 0, 0, time.UTC), rsp)
+}
+
+func TestNextDay(t *testing.T) {
+	var sch tScheduleTime
+	year := 2023
+	mon := time.March
+	day := 4
+	sch.year = &year
+	sch.month = &mon
+	sch.day = &day
+
+	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok := sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 2, 3, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 4, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 4, 6, 15, 30, 10, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	testTime = time.Date(2023, 3, 6, 15, 30, 10, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	sch.year = nil
+	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 12, 31, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2024, 3, 4, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 2, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 4, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 6, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2024, 3, 4, 0, 0, 0, 0, time.UTC), rsp)
+
+	sch.year = &year
+	sch.month = nil
+	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 1, 7, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 2, 4, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 5, 2, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 5, 4, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2024, 1, 1, 15, 30, 10, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	testTime = time.Date(2023, 12, 6, 15, 30, 10, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	sch.year = nil
+	sch.month = nil // already is
+	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 2, 28, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 4, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 12, 31, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2024, 1, 4, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 5, 1, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 5, 4, 0, 0, 0, 0, time.UTC), rsp)
+}
+
+func TestNextWeekDay(t *testing.T) {
+	var sch tScheduleTime
+	year := 2023
+	mon := time.March
+	weekday := time.Saturday
+	sch.year = &year
+	sch.month = &mon
+	sch.weekday = &weekday
+
+	testTime := time.Date(2023, 3, 11, 15, 30, 10, 0, time.UTC)
+	rsp, ok := sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 3, 10, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 11, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 9, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 11, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 8, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 11, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 7, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 11, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 6, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 11, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 5, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 11, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 3, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 4, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 31, 15, 30, 10, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	sch.year = nil
+	testTime = time.Date(2023, 3, 11, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 3, 31, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2024, 3, 2, 0, 0, 0, 0, time.UTC), rsp)
+
+	sch.year = &year
+	sch.month = nil
+	testTime = time.Date(2023, 3, 11, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 3, 31, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 4, 1, 0, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 12, 30, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 12, 30, 15, 30, 10, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 12, 31, 15, 30, 10, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	sch.year = nil
+	sch.month = nil
+	testTime = time.Date(2023, 3, 11, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 12, 31, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2024, 1, 6, 0, 0, 0, 0, time.UTC), rsp)
+}
+
+func TestNextHour(t *testing.T) {
+	var sch tScheduleTime
+	year := 2023
+	mon := time.March
+	day := 4
+	hour := 15
+	sch.year = &year
+	sch.month = &mon
+	sch.day = &day
+	sch.hour = &hour
+
+	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok := sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 2, 3, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 4, 15, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 4, 16, 30, 10, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	sch.year = nil
+	testTime = time.Date(2023, 3, 4, 16, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2024, 3, 4, 15, 0, 0, 0, time.UTC), rsp)
+
+	sch.year = &year
+	sch.month = nil
+	testTime = time.Date(2023, 3, 4, 16, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 4, 4, 15, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 12, 4, 16, 30, 10, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	sch.year = nil
+	sch.month = nil
+	testTime = time.Date(2023, 12, 4, 16, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2024, 1, 4, 15, 0, 0, 0, time.UTC), rsp)
+
+	sch.year = &year
+	sch.month = &mon
+	sch.day = nil
+	testTime = time.Date(2023, 3, 4, 16, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 5, 15, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 4, 14, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 4, 15, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 31, 16, 30, 10, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	sch.month = nil
+	sch.day = nil
+	testTime = time.Date(2023, 3, 31, 16, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 4, 1, 15, 0, 0, 0, time.UTC), rsp)
+
+	sch.year = nil
+	sch.month = nil
+	day = 31
+	sch.day = &day
+	testTime = time.Date(2023, 3, 1, 16, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 31, 15, 0, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 31, 16, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 4, 30, 15, 0, 0, 0, time.UTC), rsp)
+
+	sch.day = nil
+	weekDay := time.Saturday
+	sch.weekday = &weekDay
+	testTime = time.Date(2023, 3, 4, 16, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 11, 15, 0, 0, 0, time.UTC), rsp)
+}
+
+func TestNextMinute(t *testing.T) {
+	var sch tScheduleTime
+	year := 2023
+	mon := time.March
+	day := 4
+	hour := 15
+	min := 30
+	sch.year = &year
+	sch.month = &mon
+	sch.day = &day
+	sch.hour = &hour
+	sch.minute = &min
+
+	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok := sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 2, 3, 15, 30, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 4, 15, 30, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 4, 15, 31, 10, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	sch.year = nil
+	testTime = time.Date(2023, 3, 4, 15, 31, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2024, 3, 4, 15, 30, 0, 0, time.UTC), rsp)
+
+	sch.year = &year
+	sch.hour = nil
+	testTime = time.Date(2023, 3, 4, 15, 31, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 4, 16, 30, 0, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 4, 23, 31, 10, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	sch.day = nil
+	sch.hour = nil
+	testTime = time.Date(2023, 3, 4, 23, 31, 10, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 5, 0, 30, 0, 0, time.UTC), rsp)
+}
+
+func TestNextSecond(t *testing.T) {
+	var sch tScheduleTime
+	year := 2023
+	mon := time.March
+	day := 4
+	hour := 15
+	min := 30
+	sec := 10
+	sch.year = &year
+	sch.month = &mon
+	sch.day = &day
+	sch.hour = &hour
+	sch.minute = &min
+	sch.second = &sec
+
+	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
+	rsp, ok := sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, testTime, rsp)
+
+	testTime = time.Date(2023, 3, 4, 15, 30, 9, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 4, 15, 30, 11, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	sch.minute = nil
+	testTime = time.Date(2023, 3, 4, 15, 30, 11, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 4, 15, 31, 10, 0, time.UTC), rsp)
+
+	testTime = time.Date(2023, 3, 4, 15, 59, 11, 0, time.UTC)
+	_, ok = sch.GetNextTime(testTime)
+	require.False(t, ok)
+
+	sch.hour = nil
+	sch.minute = nil
+	testTime = time.Date(2023, 3, 4, 15, 59, 11, 0, time.UTC)
+	rsp, ok = sch.GetNextTime(testTime)
+	require.True(t, ok)
+	require.Equal(t, time.Date(2023, 3, 4, 16, 0, 10, 0, time.UTC), rsp)
 }
