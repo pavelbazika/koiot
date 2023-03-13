@@ -8,10 +8,10 @@ import (
 )
 
 func TestPrevYear(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	year := 2023
-	sch.year = &year
+	sch.Year = &year
 
 	rsp, ok := sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -33,11 +33,11 @@ func TestPrevYear(t *testing.T) {
 }
 
 func TestPrevMonth(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	year := 2023
 	mon := time.March
-	sch.year = &year
-	sch.month = &mon
+	sch.Year = &year
+	sch.Month = &mon
 
 	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok := sch.GetPrevTime(testTime)
@@ -58,7 +58,7 @@ func TestPrevMonth(t *testing.T) {
 	_, ok = sch.GetPrevTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
+	sch.Year = nil
 	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -76,13 +76,13 @@ func TestPrevMonth(t *testing.T) {
 }
 
 func TestPrevDay(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	year := 2023
 	mon := time.March
 	day := 4
-	sch.year = &year
-	sch.month = &mon
-	sch.day = &day
+	sch.Year = &year
+	sch.Month = &mon
+	sch.Day = &day
 
 	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok := sch.GetPrevTime(testTime)
@@ -102,7 +102,7 @@ func TestPrevDay(t *testing.T) {
 	_, ok = sch.GetPrevTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
+	sch.Year = nil
 	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -123,8 +123,8 @@ func TestPrevDay(t *testing.T) {
 	require.True(t, ok)
 	require.Equal(t, time.Date(2022, 3, 4, 23, 59, 59, 0, time.UTC), rsp)
 
-	sch.year = &year
-	sch.month = nil
+	sch.Year = &year
+	sch.Month = nil
 	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -148,8 +148,8 @@ func TestPrevDay(t *testing.T) {
 	_, ok = sch.GetPrevTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
-	sch.month = nil // already is
+	sch.Year = nil
+	sch.Month = nil // already is
 	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -172,13 +172,13 @@ func TestPrevDay(t *testing.T) {
 }
 
 func TestPrevWeekDay(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	year := 2023
 	mon := time.March
 	weekday := time.Saturday
-	sch.year = &year
-	sch.month = &mon
-	sch.weekday = &weekday
+	sch.Year = &year
+	sch.Month = &mon
+	sch.WeekDay = &weekday
 
 	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok := sch.GetPrevTime(testTime)
@@ -229,7 +229,7 @@ func TestPrevWeekDay(t *testing.T) {
 	_, ok = sch.GetPrevTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
+	sch.Year = nil
 	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -240,8 +240,8 @@ func TestPrevWeekDay(t *testing.T) {
 	require.True(t, ok)
 	require.Equal(t, time.Date(2022, 3, 26, 23, 59, 59, 0, time.UTC), rsp)
 
-	sch.year = &year
-	sch.month = nil
+	sch.Year = &year
+	sch.Month = nil
 	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -261,8 +261,8 @@ func TestPrevWeekDay(t *testing.T) {
 	_, ok = sch.GetPrevTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
-	sch.month = nil
+	sch.Year = nil
+	sch.Month = nil
 	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -275,15 +275,15 @@ func TestPrevWeekDay(t *testing.T) {
 }
 
 func TestPrevHour(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	year := 2023
 	mon := time.March
 	day := 4
 	hour := 15
-	sch.year = &year
-	sch.month = &mon
-	sch.day = &day
-	sch.hour = &hour
+	sch.Year = &year
+	sch.Month = &mon
+	sch.Day = &day
+	sch.Hour = &hour
 
 	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok := sch.GetPrevTime(testTime)
@@ -299,14 +299,14 @@ func TestPrevHour(t *testing.T) {
 	_, ok = sch.GetPrevTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
+	sch.Year = nil
 	testTime = time.Date(2023, 3, 4, 14, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
 	require.Equal(t, time.Date(2022, 3, 4, 15, 59, 59, 0, time.UTC), rsp)
 
-	sch.year = &year
-	sch.month = nil
+	sch.Year = &year
+	sch.Month = nil
 	testTime = time.Date(2023, 3, 4, 14, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -316,16 +316,16 @@ func TestPrevHour(t *testing.T) {
 	_, ok = sch.GetPrevTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
-	sch.month = nil
+	sch.Year = nil
+	sch.Month = nil
 	testTime = time.Date(2023, 1, 4, 14, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
 	require.Equal(t, time.Date(2022, 12, 4, 15, 59, 59, 0, time.UTC), rsp)
 
-	sch.year = &year
-	sch.month = &mon
-	sch.day = nil
+	sch.Year = &year
+	sch.Month = &mon
+	sch.Day = nil
 	testTime = time.Date(2023, 3, 4, 14, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -340,17 +340,17 @@ func TestPrevHour(t *testing.T) {
 	_, ok = sch.GetPrevTime(testTime)
 	require.False(t, ok)
 
-	sch.month = nil
-	sch.day = nil
+	sch.Month = nil
+	sch.Day = nil
 	testTime = time.Date(2023, 3, 1, 14, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
 	require.Equal(t, time.Date(2023, 2, 28, 15, 59, 59, 0, time.UTC), rsp)
 
-	sch.year = nil
-	sch.month = nil
+	sch.Year = nil
+	sch.Month = nil
 	day = 31
-	sch.day = &day
+	sch.Day = &day
 	testTime = time.Date(2023, 3, 31, 14, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -361,9 +361,9 @@ func TestPrevHour(t *testing.T) {
 	require.True(t, ok)
 	require.Equal(t, time.Date(2023, 2, 28, 15, 59, 59, 0, time.UTC), rsp)
 
-	sch.day = nil
+	sch.Day = nil
 	weekDay := time.Saturday
-	sch.weekday = &weekDay
+	sch.WeekDay = &weekDay
 	testTime = time.Date(2023, 3, 4, 14, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -372,17 +372,17 @@ func TestPrevHour(t *testing.T) {
 }
 
 func TestPrevMinute(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	year := 2023
 	mon := time.March
 	day := 4
 	hour := 15
 	min := 30
-	sch.year = &year
-	sch.month = &mon
-	sch.day = &day
-	sch.hour = &hour
-	sch.minute = &min
+	sch.Year = &year
+	sch.Month = &mon
+	sch.Day = &day
+	sch.Hour = &hour
+	sch.Minute = &min
 
 	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok := sch.GetPrevTime(testTime)
@@ -398,14 +398,14 @@ func TestPrevMinute(t *testing.T) {
 	_, ok = sch.GetPrevTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
+	sch.Year = nil
 	testTime = time.Date(2023, 3, 4, 15, 29, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
 	require.Equal(t, time.Date(2022, 3, 4, 15, 30, 59, 0, time.UTC), rsp)
 
-	sch.year = &year
-	sch.hour = nil
+	sch.Year = &year
+	sch.Hour = nil
 	testTime = time.Date(2023, 3, 4, 15, 29, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -415,8 +415,8 @@ func TestPrevMinute(t *testing.T) {
 	_, ok = sch.GetPrevTime(testTime)
 	require.False(t, ok)
 
-	sch.day = nil
-	sch.hour = nil
+	sch.Day = nil
+	sch.Hour = nil
 	testTime = time.Date(2023, 3, 4, 0, 29, 10, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -424,19 +424,19 @@ func TestPrevMinute(t *testing.T) {
 }
 
 func TestPrevSecond(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	year := 2023
 	mon := time.March
 	day := 4
 	hour := 15
 	min := 30
 	sec := 10
-	sch.year = &year
-	sch.month = &mon
-	sch.day = &day
-	sch.hour = &hour
-	sch.minute = &min
-	sch.second = &sec
+	sch.Year = &year
+	sch.Month = &mon
+	sch.Day = &day
+	sch.Hour = &hour
+	sch.Minute = &min
+	sch.Second = &sec
 
 	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok := sch.GetPrevTime(testTime)
@@ -452,7 +452,7 @@ func TestPrevSecond(t *testing.T) {
 	_, ok = sch.GetPrevTime(testTime)
 	require.False(t, ok)
 
-	sch.minute = nil
+	sch.Minute = nil
 	testTime = time.Date(2023, 3, 4, 15, 30, 9, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -462,8 +462,8 @@ func TestPrevSecond(t *testing.T) {
 	_, ok = sch.GetPrevTime(testTime)
 	require.False(t, ok)
 
-	sch.hour = nil
-	sch.minute = nil
+	sch.Hour = nil
+	sch.Minute = nil
 	testTime = time.Date(2023, 3, 4, 15, 0, 9, 0, time.UTC)
 	rsp, ok = sch.GetPrevTime(testTime)
 	require.True(t, ok)
@@ -471,10 +471,10 @@ func TestPrevSecond(t *testing.T) {
 }
 
 func TestNextYear(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	year := 2023
-	sch.year = &year
+	sch.Year = &year
 
 	rsp, ok := sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -496,11 +496,11 @@ func TestNextYear(t *testing.T) {
 }
 
 func TestNextMonth(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	year := 2023
 	mon := time.March
-	sch.year = &year
-	sch.month = &mon
+	sch.Year = &year
+	sch.Month = &mon
 
 	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok := sch.GetNextTime(testTime)
@@ -521,7 +521,7 @@ func TestNextMonth(t *testing.T) {
 	_, ok = sch.GetNextTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
+	sch.Year = nil
 	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -539,13 +539,13 @@ func TestNextMonth(t *testing.T) {
 }
 
 func TestNextDay(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	year := 2023
 	mon := time.March
 	day := 4
-	sch.year = &year
-	sch.month = &mon
-	sch.day = &day
+	sch.Year = &year
+	sch.Month = &mon
+	sch.Day = &day
 
 	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok := sch.GetNextTime(testTime)
@@ -565,7 +565,7 @@ func TestNextDay(t *testing.T) {
 	_, ok = sch.GetNextTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
+	sch.Year = nil
 	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -586,8 +586,8 @@ func TestNextDay(t *testing.T) {
 	require.True(t, ok)
 	require.Equal(t, time.Date(2024, 3, 4, 0, 0, 0, 0, time.UTC), rsp)
 
-	sch.year = &year
-	sch.month = nil
+	sch.Year = &year
+	sch.Month = nil
 	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -611,8 +611,8 @@ func TestNextDay(t *testing.T) {
 	_, ok = sch.GetNextTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
-	sch.month = nil // already is
+	sch.Year = nil
+	sch.Month = nil // already is
 	testTime = time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -635,13 +635,13 @@ func TestNextDay(t *testing.T) {
 }
 
 func TestNextWeekDay(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	year := 2023
 	mon := time.March
 	weekday := time.Saturday
-	sch.year = &year
-	sch.month = &mon
-	sch.weekday = &weekday
+	sch.Year = &year
+	sch.Month = &mon
+	sch.WeekDay = &weekday
 
 	testTime := time.Date(2023, 3, 11, 15, 30, 10, 0, time.UTC)
 	rsp, ok := sch.GetNextTime(testTime)
@@ -692,7 +692,7 @@ func TestNextWeekDay(t *testing.T) {
 	_, ok = sch.GetNextTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
+	sch.Year = nil
 	testTime = time.Date(2023, 3, 11, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -703,8 +703,8 @@ func TestNextWeekDay(t *testing.T) {
 	require.True(t, ok)
 	require.Equal(t, time.Date(2024, 3, 2, 0, 0, 0, 0, time.UTC), rsp)
 
-	sch.year = &year
-	sch.month = nil
+	sch.Year = &year
+	sch.Month = nil
 	testTime = time.Date(2023, 3, 11, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -724,8 +724,8 @@ func TestNextWeekDay(t *testing.T) {
 	_, ok = sch.GetNextTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
-	sch.month = nil
+	sch.Year = nil
+	sch.Month = nil
 	testTime = time.Date(2023, 3, 11, 15, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -738,15 +738,15 @@ func TestNextWeekDay(t *testing.T) {
 }
 
 func TestNextHour(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	year := 2023
 	mon := time.March
 	day := 4
 	hour := 15
-	sch.year = &year
-	sch.month = &mon
-	sch.day = &day
-	sch.hour = &hour
+	sch.Year = &year
+	sch.Month = &mon
+	sch.Day = &day
+	sch.Hour = &hour
 
 	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok := sch.GetNextTime(testTime)
@@ -762,14 +762,14 @@ func TestNextHour(t *testing.T) {
 	_, ok = sch.GetNextTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
+	sch.Year = nil
 	testTime = time.Date(2023, 3, 4, 16, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
 	require.Equal(t, time.Date(2024, 3, 4, 15, 0, 0, 0, time.UTC), rsp)
 
-	sch.year = &year
-	sch.month = nil
+	sch.Year = &year
+	sch.Month = nil
 	testTime = time.Date(2023, 3, 4, 16, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -779,16 +779,16 @@ func TestNextHour(t *testing.T) {
 	_, ok = sch.GetNextTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
-	sch.month = nil
+	sch.Year = nil
+	sch.Month = nil
 	testTime = time.Date(2023, 12, 4, 16, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
 	require.Equal(t, time.Date(2024, 1, 4, 15, 0, 0, 0, time.UTC), rsp)
 
-	sch.year = &year
-	sch.month = &mon
-	sch.day = nil
+	sch.Year = &year
+	sch.Month = &mon
+	sch.Day = nil
 	testTime = time.Date(2023, 3, 4, 16, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -803,17 +803,17 @@ func TestNextHour(t *testing.T) {
 	_, ok = sch.GetNextTime(testTime)
 	require.False(t, ok)
 
-	sch.month = nil
-	sch.day = nil
+	sch.Month = nil
+	sch.Day = nil
 	testTime = time.Date(2023, 3, 31, 16, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
 	require.Equal(t, time.Date(2023, 4, 1, 15, 0, 0, 0, time.UTC), rsp)
 
-	sch.year = nil
-	sch.month = nil
+	sch.Year = nil
+	sch.Month = nil
 	day = 31
-	sch.day = &day
+	sch.Day = &day
 	testTime = time.Date(2023, 3, 1, 16, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -824,9 +824,9 @@ func TestNextHour(t *testing.T) {
 	require.True(t, ok)
 	require.Equal(t, time.Date(2023, 4, 30, 15, 0, 0, 0, time.UTC), rsp)
 
-	sch.day = nil
+	sch.Day = nil
 	weekDay := time.Saturday
-	sch.weekday = &weekDay
+	sch.WeekDay = &weekDay
 	testTime = time.Date(2023, 3, 4, 16, 30, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -834,17 +834,17 @@ func TestNextHour(t *testing.T) {
 }
 
 func TestNextMinute(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	year := 2023
 	mon := time.March
 	day := 4
 	hour := 15
 	min := 30
-	sch.year = &year
-	sch.month = &mon
-	sch.day = &day
-	sch.hour = &hour
-	sch.minute = &min
+	sch.Year = &year
+	sch.Month = &mon
+	sch.Day = &day
+	sch.Hour = &hour
+	sch.Minute = &min
 
 	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok := sch.GetNextTime(testTime)
@@ -860,14 +860,14 @@ func TestNextMinute(t *testing.T) {
 	_, ok = sch.GetNextTime(testTime)
 	require.False(t, ok)
 
-	sch.year = nil
+	sch.Year = nil
 	testTime = time.Date(2023, 3, 4, 15, 31, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
 	require.Equal(t, time.Date(2024, 3, 4, 15, 30, 0, 0, time.UTC), rsp)
 
-	sch.year = &year
-	sch.hour = nil
+	sch.Year = &year
+	sch.Hour = nil
 	testTime = time.Date(2023, 3, 4, 15, 31, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -877,8 +877,8 @@ func TestNextMinute(t *testing.T) {
 	_, ok = sch.GetNextTime(testTime)
 	require.False(t, ok)
 
-	sch.day = nil
-	sch.hour = nil
+	sch.Day = nil
+	sch.Hour = nil
 	testTime = time.Date(2023, 3, 4, 23, 31, 10, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -886,19 +886,19 @@ func TestNextMinute(t *testing.T) {
 }
 
 func TestNextSecond(t *testing.T) {
-	var sch tScheduleTime
+	var sch ScheduleTime
 	year := 2023
 	mon := time.March
 	day := 4
 	hour := 15
 	min := 30
 	sec := 10
-	sch.year = &year
-	sch.month = &mon
-	sch.day = &day
-	sch.hour = &hour
-	sch.minute = &min
-	sch.second = &sec
+	sch.Year = &year
+	sch.Month = &mon
+	sch.Day = &day
+	sch.Hour = &hour
+	sch.Minute = &min
+	sch.Second = &sec
 
 	testTime := time.Date(2023, 3, 4, 15, 30, 10, 0, time.UTC)
 	rsp, ok := sch.GetNextTime(testTime)
@@ -914,7 +914,7 @@ func TestNextSecond(t *testing.T) {
 	_, ok = sch.GetNextTime(testTime)
 	require.False(t, ok)
 
-	sch.minute = nil
+	sch.Minute = nil
 	testTime = time.Date(2023, 3, 4, 15, 30, 11, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)
@@ -924,8 +924,8 @@ func TestNextSecond(t *testing.T) {
 	_, ok = sch.GetNextTime(testTime)
 	require.False(t, ok)
 
-	sch.hour = nil
-	sch.minute = nil
+	sch.Hour = nil
+	sch.Minute = nil
 	testTime = time.Date(2023, 3, 4, 15, 59, 11, 0, time.UTC)
 	rsp, ok = sch.GetNextTime(testTime)
 	require.True(t, ok)

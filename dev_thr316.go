@@ -8,14 +8,6 @@ import (
 	"github.com/pavelbazika/ewelink"
 )
 
-type Thermometer interface {
-	GetTemp(ctx context.Context) (float32, error)
-}
-
-type Switch interface {
-	Switch(ctx context.Context, on bool) error
-}
-
 type tTHR316 struct {
 	ew      *ewelink.Ewelink
 	session *ewelink.Session
@@ -25,7 +17,7 @@ type tTHR316 struct {
 var _ Thermometer = &tTHR316{}
 var _ Switch = &tTHR316{}
 
-func NewTHR316(ew *ewelink.Ewelink, session *ewelink.Session, id string) Thermometer {
+func NewTHR316(ew *ewelink.Ewelink, session *ewelink.Session, id string) *tTHR316 {
 	return &tTHR316{
 		ew:      ew,
 		session: session,
